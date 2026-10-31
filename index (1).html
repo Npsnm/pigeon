@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jacob Is A Pigeon | Official Avian Investigation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        pigeon: {
+                            50: '#f0fdf4',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#022c22',
+                        }
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        radarPulse: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0.8' },
+                            '100%': { transform: 'scale(2.2)', opacity: '0' },
+                        },
+                        bob: {
+                            '0%, 100%': { transform: 'rotate(0deg)' },
+                            '50%': { transform: 'rotate(4deg) translateY(-4px)' }
+                        }
+                    },
+                    animation: {
+                        float: 'float 3.5s ease-in-out infinite',
+                        radarPulse: 'radarPulse 2s cubic-bezier(0, 0.2, 0.8, 1) infinite',
+                        bob: 'bob 1.5s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- Early Script Load for Handlers & Vector Fallbacks -->
+    <script>
+        // High Quality Backup Vector SVG for Jacob the Pigeon with Glasses (Properly URL-encoded)
+        const JACOB_SVG_BACKUP = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 450' width='100%25' height='100%25'%3E%3Cdefs%3E%3ClinearGradient id='pNeck' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='50%25' stop-color='%238b5cf6'/%3E%3Cstop offset='100%25' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3ClinearGradient id='pBody' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2394a3b8'/%3E%3Cstop offset='100%25' stop-color='%23475569'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg%3E%3Cpath d='M120 400 L100 440 M120 400 L115 442 M120 400 L130 438' stroke='%23f97316' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M220 400 L200 440 M220 400 L215 442 M220 400 L230 438' stroke='%23f97316' stroke-width='6' stroke-linecap='round'/%3E%3Cellipse cx='180' cy='300' rx='110' ry='100' fill='url(%23pBody)'/%3E%3Cpath d='M100 240 Q30 280 80 370 Q170 360 200 290 Z' fill='%23334155'/%3E%3Cpath d='M110 240 Q170 140 200 130 Q230 140 250 240 Z' fill='url(%23pNeck)'/%3E%3Cellipse cx='180' cy='110' rx='60' ry='58' fill='%23fce7f3'/%3E%3Cpath d='M130 75 Q180 60 230 75 Q210 50 180 50 Q150 50 130 75 Z' fill='%231e293b'/%3E%3Ccircle cx='152' cy='100' r='7' fill='%230f172a'/%3E%3Ccircle cx='208' cy='100' r='7' fill='%230f172a'/%3E%3Crect x='132' y='86' width='36' height='24' rx='4' fill='none' stroke='%230f172a' stroke-width='4'/%3E%3Crect x='192' y='86' width='36' height='24' rx='4' fill='none' stroke='%230f172a' stroke-width='4'/%3E%3Cline x1='168' y1='98' x2='192' y2='98' stroke='%230f172a' stroke-width='4'/%3E%3Cpath d='M160 122 Q180 135 200 122' fill='none' stroke='%230f172a' stroke-width='4' stroke-linecap='round'/%3E%3Cpolygon points='175,128 185,128 180,140' fill='%23f97316'/%3E%3C/g%3E%3C/svg%3E`;
+
+        function handleHeroError(img) {
+            img.onerror = null; // Prevent infinite loop if backup fails
+            img.src = JACOB_SVG_BACKUP;
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-arcade { font-family: 'Press Start 2P', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+        .crumb-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: fallAndFade 1.2s ease-out forwards;
+        }
+        @keyframes fallAndFade {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(120px) rotate(360deg) scale(0.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <span class="text-2xl transform group-hover:rotate-12 transition-transform">🐦</span>
+                <span class="font-black text-xl tracking-tight bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                    JacobIsAPigeon.com
+                </span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
+                <a href="#evidence" class="hover:text-amber-400 transition-colors">Scientific Proof</a>
+                <a href="#radar" class="hover:text-amber-400 transition-colors">Live Radar</a>
+                <a href="#soundboard" class="hover:text-amber-400 transition-colors">Soundboard</a>
+                <a href="#game-section" class="hover:text-amber-400 transition-colors">Arcade Game</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="#game-section" class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-lg shadow-amber-500/5">
+                    <span>🎮</span> Play Game
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Showcase Section -->
+    <main class="flex-grow">
+        <section class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Text Column -->
+                <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                        CONFIRMED SPECIES IDENTIFICATION: COLUMBA LIVIA
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-slate-100">
+                        Jacob Is A <span class="bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Pigeon.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-slate-300 leading-relaxed">
+                        The unprovoked head bobs. The intense fascination with discarded sidewalk crusts. The instinctual urge to nest on roof ledges. Peer-reviewed research confirms 100% match.
+                    </p>
+
+                    <!-- Interactive Buttons -->
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
+                        <button onclick="triggerPigeonCoo('coo')" class="px-6 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-base shadow-xl shadow-emerald-950/50 transform hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-3">
+                            <span class="text-2xl">🔊</span>
+                            <span>Press For Pigeon Coo</span>
+                        </button>
+                        
+                        <button onclick="dropBreadcrumb(event)" class="px-6 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-base border border-slate-700 hover:border-amber-500/50 transition-all flex items-center gap-3">
+                            <span class="text-2xl">🍞</span>
+                            <span>Feed Jacob A Crumb</span>
+                        </button>
+                    </div>
+
+                    <!-- Live Feed Counter Badge -->
+                    <div class="pt-2 flex items-center justify-center lg:justify-start gap-6 text-xs text-slate-400 font-medium">
+                        <div class="flex items-center gap-2">
+                            <span class="text-amber-400 font-bold text-base" id="crumbsTossed">0</span>
+                            <span>Crumbs Tossed</span>
+                        </div>
+                        <div class="w-1 h-1 rounded-full bg-slate-700"></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400 font-bold text-base">99.8%</span>
+                            <span>Pigeon Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Showcase Column -->
+                <div class="lg:col-span-6 flex flex-col items-center">
+                    <div id="imageCardContainer" class="relative w-full max-w-md group cursor-pointer" onclick="dropBreadcrumb(event)">
+                        <!-- Glow Effect -->
+                        <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 blur-xl opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                        
+                        <!-- Main Card -->
+                        <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-2xl overflow-hidden">
+                            <div class="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-950/90 flex items-center justify-center">
+                                <img id="heroImage" src="Pidgeon Main Shot.jpg" alt="Jacob The Pigeon" class="w-full h-full object-contain filter drop-shadow-2xl transition-transform duration-500 group-hover:scale-105" onerror="handleHeroError(this)">
+                            </div>
+                            
+                            <div class="mt-4 flex items-center justify-between text-xs font-mono text-slate-400 px-2">
+                                <span class="flex items-center gap-1.5 text-emerald-400 font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> SPECIMEN #0402</span>
+                                <span class="text-amber-400 font-bold">CLICK TO FEED 🍞</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Live Pigeon Radar Section -->
+        <section id="radar" class="max-w-6xl mx-auto px-4 py-8">
+            <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+                <div class="grid md:grid-cols-12 gap-6 items-center">
+                    <div class="md:col-span-5 space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-bold tracking-wider border border-red-500/20">
+                            LIVE TRACKING RADAR
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-100">Current Jacob Location</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            GPS telemetry actively tracks Jacob's flight pattern across city benches, roof ledges, and bakery sidewalks. <span class="text-amber-400">Click anywhere on the radar screen to drop a breadcrumb signal!</span>
+                        </p>
+                        <div class="space-y-2 pt-2">
+                            <div class="flex justify-between text-xs font-mono border-b border-slate-800 py-1.5">
+                                <span class="text-slate-400">ZONE:</span>
+                                <span id="radarZone" class="text-amber-400 font-bold">CENTRAL PARK BENCHES</span>
+                            </div>
+                            <div class="flex justify-between text-xs font-mono border-b border-slate-800 py-1.5">
+                                <span class="text-slate-400">CURRENT ACTION:</span>
+                                <span id="radarStatus" class="text-emerald-400 font-bold">SEARCHING FOR BREAD</span>
+                            </div>
+                            <div class="flex justify-between text-xs font-mono border-b border-slate-800 py-1.5">
+                                <span class="text-slate-400">ALTITUDE:</span>
+                                <span id="radarAlt" class="text-cyan-400 font-bold">0.4 METERS</span>
+                            </div>
+                            <div class="flex justify-between text-xs font-mono py-1.5">
+                                <span class="text-slate-400">HEAD BOB FREQUENCY:</span>
+                                <span id="radarBobs" class="text-teal-400 font-bold">142 BOBS / MIN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Radar Display -->
+                    <div class="md:col-span-7 flex justify-center">
+                        <div id="radarScreen" onclick="pingRadarLocation(event)" class="relative w-64 h-64 md:w-72 md:h-72 rounded-full bg-slate-950 border-2 border-emerald-500/30 flex items-center justify-center overflow-hidden shadow-2xl cursor-crosshair group">
+                            <!-- Grid Lines -->
+                            <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+                            
+                            <!-- Radar Rings -->
+                            <div class="absolute inset-4 rounded-full border border-emerald-500/20"></div>
+                            <div class="absolute inset-12 rounded-full border border-emerald-500/20"></div>
+                            <div class="absolute inset-24 rounded-full border border-emerald-500/20"></div>
+                            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent"></div>
+                            
+                            <!-- Radar Sweep Line -->
+                            <div class="absolute w-full h-full animate-[spin_4s_linear_infinite] origin-center pointer-events-none">
+                                <div class="w-1/2 h-1/2 bg-gradient-to-br from-emerald-400/40 via-emerald-500/10 to-transparent origin-bottom-right"></div>
+                            </div>
+                            
+                            <!-- Dynamic Jacob Target Blip -->
+                            <div id="jacobBlip" class="absolute transition-all duration-700 ease-out flex flex-col items-center pointer-events-none" style="top: 25%; left: 65%;">
+                                <span class="w-5 h-5 rounded-full bg-amber-400 animate-ping absolute"></span>
+                                <span class="w-3.5 h-3.5 rounded-full bg-amber-500 relative z-10 border-2 border-slate-950 shadow-lg"></span>
+                                <span class="text-[10px] font-mono font-bold text-amber-400 bg-slate-950/90 px-1.5 py-0.5 rounded border border-amber-500/40 mt-1 whitespace-nowrap shadow-md">JACOB (TARGET)</span>
+                            </div>
+
+                            <!-- Click Prompt Overlay -->
+                            <div class="absolute bottom-3 text-[10px] font-mono text-emerald-400/70 bg-slate-950/80 px-2 py-0.5 rounded border border-emerald-500/20 pointer-events-none">
+                                CLICK RADAR TO LURE
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pigeon Soundboard Section -->
+        <section id="soundboard" class="max-w-6xl mx-auto px-4 py-12">
+            <div class="text-center space-y-3 mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold uppercase tracking-widest border border-teal-500/20">
+                    AVIAN AUDIO DECODER
+                </div>
+                <h2 class="text-3xl font-black text-slate-100">Jacob's Vocalization Soundboard</h2>
+                <p class="text-slate-400 text-sm max-w-md mx-auto">
+                    Click any sound wave to decode Jacob's real-time pigeon communication.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="triggerPigeonCoo('coo')" class="p-5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 transition-all text-left group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🕊️</div>
+                    <div class="font-bold text-slate-100 text-sm">Gentle Sidewalk Coo</div>
+                    <div class="text-xs text-slate-500 mt-1">Standard greeting tone</div>
+                </button>
+
+                <button onclick="triggerPigeonCoo('demand')" class="p-5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 transition-all text-left group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🍞</div>
+                    <div class="font-bold text-slate-100 text-sm">Crumb Demand</div>
+                    <div class="text-xs text-slate-500 mt-1">Emitted when bread is near</div>
+                </button>
+
+                <button onclick="triggerPigeonCoo('flap')" class="p-5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-teal-500/50 transition-all text-left group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🪶</div>
+                    <div class="font-bold text-slate-100 text-sm">Rapid Wing Flap</div>
+                    <div class="text-xs text-slate-500 mt-1">Evasive park bench takeoff</div>
+                </button>
+
+                <button onclick="triggerPigeonCoo('squawk')" class="p-5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-red-500/50 transition-all text-left group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🚨</div>
+                    <div class="font-bold text-slate-100 text-sm">Hawk Alert Squawk</div>
+                    <div class="text-xs text-slate-500 mt-1">High-frequency danger call</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Pigeon Runner Game Section -->
+        <section id="game-section" class="max-w-4xl mx-auto px-4 py-12 border-t border-slate-800/80">
+            <div class="text-center space-y-3 mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-widest border border-amber-500/20">
+                    ARCADE MINI-GAME
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-100">Pigeon Runner: Jacob's Breadcrumb Quest</h2>
+                <p class="text-slate-400 text-sm max-w-lg mx-auto">
+                    Guide Jacob through the city sky! Dodge hawks and flying newspapers while picking up french fries & breadcrumbs.
+                </p>
+            </div>
+
+            <!-- Game Container -->
+            <div class="relative bg-slate-900 border-2 border-slate-700/80 rounded-3xl p-3 sm:p-4 shadow-2xl overflow-hidden">
+                <!-- HUD Header -->
+                <div class="flex items-center justify-between px-4 py-3 bg-slate-950 rounded-2xl mb-3 font-arcade text-xs text-slate-300">
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-400">SCORE:</span>
+                        <span id="gameScore" class="text-white font-bold text-sm">0</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-emerald-400">HIGH SCORE:</span>
+                        <span id="gameHighScore" class="text-white font-bold text-sm">0</span>
+                    </div>
+                </div>
+
+                <!-- Canvas Screen -->
+                <div class="relative w-full aspect-[16/9] bg-slate-950 rounded-2xl overflow-hidden border border-slate-800">
+                    <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <!-- Start / Game Over Overlay -->
+                    <div id="gameOverlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-10">
+                        <div class="text-5xl mb-3 animate-bob">🐦</div>
+                        <h3 id="overlayTitle" class="text-2xl sm:text-3xl font-black text-amber-400 mb-2 font-arcade">READY TO FLAP?</h3>
+                        <p id="overlaySub" class="text-slate-300 text-xs sm:text-sm max-w-sm mb-6">Tap the screen or press SPACE / UP ARROW to flap wings and gather breadcrumbs!</p>
+                        <button id="startGameBtn" onclick="startGame()" class="px-8 py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-base shadow-xl transform hover:scale-105 active:scale-95 transition-all font-arcade">
+                            START GAME
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Touch Controls for Mobile -->
+                <div class="mt-3 text-center sm:hidden">
+                    <button onclick="triggerFlap()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-200 font-bold active:bg-amber-500 active:text-slate-950 transition-colors">
+                        👆 TAP HERE TO FLAP WINGS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Behavioral Proof Checklist -->
+        <section id="evidence" class="max-w-4xl mx-auto px-4 py-12 border-t border-slate-800/80">
+            <h3 class="text-2xl font-black text-center mb-8 text-slate-200">Behavioral Evidence Locker</h3>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-3 text-amber-400 font-bold">
+                        <span class="text-xl">✅</span>
+                        <span>Sidewalk Crust Attraction</span>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Exhibits 99.9% directional bias toward bakery doors, outdoor dining patios, and dropped pretzels.
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-3 text-emerald-400 font-bold">
+                        <span class="text-xl">✅</span>
+                        <span>Head-Bob Stabilization</span>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Performs rhythmic forward-backward head motion while walking to stabilize visual input. Classic pigeon mechanics.
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-3 text-teal-400 font-bold">
+                        <span class="text-xl">✅</span>
+                        <span>Roof Ledge Preference</span>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Consistently perches on high architectural ledges staring down at pedestrians with mild judgment.
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center gap-3 text-purple-400 font-bold">
+                        <span class="text-xl">✅</span>
+                        <span>Avian Sound Spectrum</span>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Vocal frequencies perfectly align with urban pigeons in the 150-400 Hz range upon spotting carbs.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-8 text-center text-slate-500 text-xs">
+        <div class="max-w-6xl mx-auto px-4 space-y-2">
+            <p>JacobIsAPigeon.com &copy; All Rights Reserved. Coo coo!</p>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // =========================================================================
+        // 📸 IMAGE & AUDIO CONFIGURATION
+        // =========================================================================
+        
+        const HERO_IMAGE_SRC = "https://246939605.fs1.hubspotusercontent-na2.net/hubfs/246939605/Pidgeon%20Main%20Shot.png"; 
+        const GAME_IMAGE_SRC = "https://246939605.fs1.hubspotusercontent-na2.net/hubfs/246939605/Untitled%20design%20(5).png";
+
+        // OPTIONAL: Place direct MP3 links here if you want to use real recorded audio clips!
+        const REAL_PIGEON_COO_AUDIO = ""; // e.g. "https://example.com/pigeon-coo.mp3"
+        const REAL_WING_FLAP_AUDIO = ""; // e.g. "https://example.com/wing-flap.mp3"
+
+        // =========================================================================
+
+        // Active Pigeon Game Image Sprite
+        let gamePigeonSprite = new Image();
+        gamePigeonSprite.crossOrigin = "Anonymous";
+        gamePigeonSprite.src = GAME_IMAGE_SRC;
+        gamePigeonSprite.onerror = () => {
+            gamePigeonSprite.src = JACOB_SVG_BACKUP;
+        };
+
+        // Sync hero image tag with configuration
+        document.addEventListener("DOMContentLoaded", () => {
+            const heroImgEl = document.getElementById('heroImage');
+            if (heroImgEl) {
+                heroImgEl.src = HERO_IMAGE_SRC;
+            }
+        });
+
+        // Advanced Realistic Pigeon Sound Synthesizer & Audio Player
+        class SoundEngine {
+            constructor() { this.ctx = null; }
+            init() { 
+                try {
+                    if (!this.ctx) {
+                        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (this.ctx && this.ctx.state === 'suspended') {
+                        this.ctx.resume();
+                    }
+                } catch(e) {
+                    console.warn("AudioContext initialization delayed until user gesture.");
+                }
+            }
+
+            // Realistic Noise Generator for Wing Flaps & Feathery Rustles
+            createNoiseBuffer(duration) {
+                const bufferSize = this.ctx.sampleRate * duration;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                return buffer;
+            }
+
+            coo(type = 'coo') {
+                this.init(); if (!this.ctx) return;
+
+                // Use external MP3 file if provided
+                if (type === 'coo' && REAL_PIGEON_COO_AUDIO) {
+                    const audio = new Audio(REAL_PIGEON_COO_AUDIO);
+                    audio.play().catch(() => {});
+                    return;
+                }
+                if (type === 'flap' && REAL_WING_FLAP_AUDIO) {
+                    const audio = new Audio(REAL_WING_FLAP_AUDIO);
+                    audio.play().catch(() => {});
+                    return;
+                }
+
+                const now = this.ctx.currentTime;
+
+                if (type === 'flap') {
+                    // Realistic Wing Flap using Filtered White Noise & Low Pitch Burst
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = this.createNoiseBuffer(0.15);
+
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(350, now);
+                    filter.frequency.linearRampToValueAtTime(100, now + 0.15);
+
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    noise.start(now);
+                } else if (type === 'demand') {
+                    // Urgent Double-Throat Coo (Kruu-Kroo!)
+                    [360, 240].forEach((freq, idx) => {
+                        const start = now + (idx * 0.12);
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, start);
+                        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, start + 0.18);
+                        gain.gain.setValueAtTime(0, start);
+                        gain.gain.linearRampToValueAtTime(0.35, start + 0.03);
+                        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.18);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(start);
+                        osc.stop(start + 0.18);
+                    });
+                } else if (type === 'squawk') {
+                    // High-pitched alarm ruffle
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(620, now);
+                    osc.frequency.exponentialRampToValueAtTime(280, now + 0.22);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                } else {
+                    // Deep Natural Pigeon Coo (Ooh-roo-ctoo...)
+                    // Primary throat resonance
+                    const osc1 = this.ctx.createOscillator();
+                    const gain1 = this.ctx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(290, now);
+                    osc1.frequency.exponentialRampToValueAtTime(340, now + 0.12);
+                    osc1.frequency.exponentialRampToValueAtTime(190, now + 0.5);
+
+                    gain1.gain.setValueAtTime(0, now);
+                    gain1.gain.linearRampToValueAtTime(0.4, now + 0.08);
+                    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                    // Vibrato / Warble LFO for throat sack oscillation
+                    const lfo = this.ctx.createOscillator();
+                    const lfoGain = this.ctx.createGain();
+                    lfo.frequency.value = 18; // 18 Hz throat warble
+                    lfoGain.gain.value = 12;
+                    lfo.connect(osc1.frequency);
+
+                    osc1.connect(gain1);
+                    gain1.connect(this.ctx.destination);
+                    
+                    lfo.start(now);
+                    osc1.start(now);
+                    lfo.stop(now + 0.5);
+                    osc1.stop(now + 0.5);
+                }
+            }
+
+            score() {
+                this.init(); if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.setValueAtTime(880, now + 0.07); // A5
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                osc.start(now); osc.stop(now + 0.22);
+            }
+
+            hit() {
+                this.init(); if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.linearRampToValueAtTime(30, now + 0.35);
+                gain.gain.setValueAtTime(0.35, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                osc.start(now); osc.stop(now + 0.35);
+            }
+        }
+        const sound = new SoundEngine();
+
+        function triggerPigeonCoo(type) {
+            sound.coo(type);
+        }
+
+        // Feed Jacob Breadcrumb Animation
+        let crumbsCount = 0;
+        function dropBreadcrumb(event) {
+            sound.coo('demand');
+            crumbsCount++;
+            document.getElementById('crumbsTossed').innerText = crumbsCount;
+
+            const container = document.getElementById('imageCardContainer');
+            const rect = container.getBoundingClientRect();
+            
+            const crumb = document.createElement('div');
+            crumb.className = 'crumb-particle text-xl';
+            crumb.innerText = '🍞';
+            crumb.style.left = (event.clientX ? event.clientX - rect.left : rect.width / 2) + 'px';
+            crumb.style.top = (event.clientY ? event.clientY - rect.top : rect.height / 3) + 'px';
+            
+            container.appendChild(crumb);
+            setTimeout(() => crumb.remove(), 1200);
+        }
+
+        // ==========================================
+        // PIGEON RUNNER ARCADE GAME ENGINE
+        // ==========================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameRunning = false;
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('jacob_high_score') || '0', 10);
+        document.getElementById('gameHighScore').innerText = highScore;
+
+        // Player physics state
+        const player = {
+            x: 50,
+            y: 150,
+            width: 46,
+            height: 46,
+            velocity: 0,
+            gravity: 0.45,
+            jump: -7.5
+        };
+
+        let obstacles = [];
+        let items = [];
+        let frameCount = 0;
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+        }
+
+        function triggerFlap() {
+            if (!gameRunning) return;
+            player.velocity = player.jump;
+            sound.coo('flap');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                if (!gameRunning) {
+                    startGame();
+                } else {
+                    triggerFlap();
+                }
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (gameRunning) triggerFlap();
+        });
+
+        function startGame() {
+            resizeCanvas();
+            gameRunning = true;
+            score = 0;
+            document.getElementById('gameScore').innerText = '0';
+            player.y = canvas.height / 2;
+            player.velocity = 0;
+            obstacles = [];
+            items = [];
+            frameCount = 0;
+            document.getElementById('gameOverlay').classList.add('hidden');
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            sound.hit();
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('jacob_high_score', highScore);
+                document.getElementById('gameHighScore').innerText = highScore;
+            }
+            document.getElementById('overlayTitle').innerText = "GAME OVER!";
+            document.getElementById('overlaySub').innerText = `Jacob gathered ${score} points before hitting an obstacle!`;
+            document.getElementById('startGameBtn').innerText = "TRY AGAIN";
+            document.getElementById('gameOverlay').classList.remove('hidden');
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            frameCount++;
+
+            // Apply gravity
+            player.velocity += player.gravity;
+            player.y += player.velocity;
+
+            // Canvas Bounds
+            if (player.y < 0) player.y = 0;
+            if (player.y + player.height > canvas.height) {
+                gameOver();
+                return;
+            }
+
+            // Spawn Obstacles (Hawks / City Obstacles)
+            if (frameCount % 100 === 0) {
+                const gap = 125;
+                const minH = 40;
+                const maxH = canvas.height - gap - minH;
+                const topH = Math.floor(Math.random() * (maxH - minH + 1)) + minH;
+                obstacles.push({
+                    x: canvas.width,
+                    top: topH,
+                    bottom: canvas.height - topH - gap,
+                    width: 38,
+                    passed: false
+                });
+            }
+
+            // Spawn Collectible Breadcrumbs & French Fries
+            if (frameCount % 65 === 0) {
+                items.push({
+                    x: canvas.width,
+                    y: Math.random() * (canvas.height - 70) + 35,
+                    size: 18,
+                    type: Math.random() > 0.3 ? 'crumb' : 'fry'
+                });
+            }
+
+            // Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Night City Background
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Stars / Lights
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            for (let i = 0; i < 25; i++) {
+                const starX = (i * 35 - (frameCount * 0.4)) % canvas.width;
+                const starY = (i * 19) % canvas.height;
+                ctx.fillRect(starX < 0 ? starX + canvas.width : starX, starY, 2, 2);
+            }
+
+            // Draw & Update Obstacles
+            ctx.fillStyle = '#ef4444';
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obs = obstacles[i];
+                obs.x -= 3.0;
+
+                // Render Top & Bottom Obstacles
+                ctx.fillRect(obs.x, 0, obs.width, obs.top);
+                ctx.fillRect(obs.x, canvas.height - obs.bottom, obs.width, obs.bottom);
+
+                // Precise Collision Detection with small padding margin
+                const pad = 6;
+                if (
+                    player.x + pad < obs.x + obs.width &&
+                    player.x + player.width - pad > obs.x &&
+                    (player.y + pad < obs.top || player.y + player.height - pad > canvas.height - obs.bottom)
+                ) {
+                    gameOver();
+                    return;
+                }
+
+                // Score Increment on passing
+                if (!obs.passed && obs.x + obs.width < player.x) {
+                    obs.passed = true;
+                    score += 5;
+                    document.getElementById('gameScore').innerText = score;
+                }
+
+                if (obs.x + obs.width < 0) obstacles.splice(i, 1);
+            }
+
+            // Draw & Update Items
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.x -= 2.6;
+
+                // Render Item
+                if (item.type === 'fry') {
+                    ctx.fillStyle = '#facc15';
+                    ctx.fillRect(item.x - 4, item.y - 8, 8, 16);
+                } else {
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.beginPath();
+                    ctx.arc(item.x, item.y, item.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Collection Check
+                const dist = Math.hypot((player.x + player.width / 2) - item.x, (player.y + player.height / 2) - item.y);
+                if (dist < player.width / 2 + item.size / 2) {
+                    sound.score();
+                    score += item.type === 'fry' ? 15 : 10;
+                    document.getElementById('gameScore').innerText = score;
+                    items.splice(i, 1);
+                } else if (item.x < -20) {
+                    items.splice(i, 1);
+                }
+            }
+
+            // Draw Player Sprite (Pigeon Game.jpg)
+            if (gamePigeonSprite.complete && gamePigeonSprite.naturalWidth > 0) {
+                ctx.drawImage(gamePigeonSprite, player.x, player.y, player.width, player.height);
+            } else {
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(player.x + player.width / 2, player.y + player.height / 2, player.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            initRadarSystem();
+        });
+
+        // ==========================================
+        // DYNAMIC RADAR TELEMETRY SYSTEM
+        // ==========================================
+        const RADAR_LOCATIONS = [
+            { zone: "CENTRAL PARK BENCH", action: "NABBING PRETZEL CRUMB", alt: "0.4 M", bobs: 148, x: 65, y: 25 },
+            { zone: "BAKERY ROOF LEDGE", action: "MONITORING CROISSANTS", alt: "12.8 M", bobs: 95, x: 30, y: 20 },
+            { zone: "OUTSIDE DINING PATIO", action: "DIVING FOR FRENCH FRIES", alt: "0.1 M", bobs: 180, x: 70, y: 70 },
+            { zone: "CITY FOUNTAIN PLAZA", action: "BATHING & WING RUSTLE", alt: "0.0 M", bobs: 110, x: 25, y: 75 },
+            { zone: "BUS STOP SHELTER", action: "EYEING DISCARDED DONUT", alt: "2.1 M", bobs: 162, x: 50, y: 45 }
+        ];
+
+        let currentRadarIdx = 0;
+
+        function initRadarSystem() {
+            // Cycle location telemetry every 4 seconds
+            setInterval(() => {
+                currentRadarIdx = (currentRadarIdx + 1) % RADAR_LOCATIONS.length;
+                const loc = RADAR_LOCATIONS[currentRadarIdx];
+                updateRadarUI(loc.zone, loc.action, loc.alt, loc.bobs, loc.x, loc.y);
+            }, 4000);
+        }
+
+        function updateRadarUI(zone, action, alt, bobs, x, y) {
+            document.getElementById('radarZone').innerText = zone;
+            document.getElementById('radarStatus').innerText = action;
+            document.getElementById('radarAlt').innerText = alt;
+            document.getElementById('radarBobs').innerText = `${bobs} BOBS / MIN`;
+
+            const blip = document.getElementById('jacobBlip');
+            if (blip) {
+                blip.style.left = `${x}%`;
+                blip.style.top = `${y}%`;
+            }
+        }
+
+        function pingRadarLocation(event) {
+            const screen = document.getElementById('radarScreen');
+            const rect = screen.getBoundingClientRect();
+            const clickX = ((event.clientX - rect.left) / rect.width) * 100;
+            const clickY = ((event.clientY - rect.top) / rect.height) * 100;
+
+            sound.coo('demand');
+            updateRadarUI(
+                "USER BREADCRUMB SIGNAL",
+                "LURED TO CLICK POSITION",
+                "0.2 M",
+                210,
+                Math.max(10, Math.min(85, clickX)),
+                Math.max(10, Math.min(85, clickY))
+            );
+        }
+    </script>
+</body>
+</html>
