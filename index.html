@@ -157,6 +157,32 @@
       width: 100%;
     }
 
+    .difficulty-select {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .diff-btn {
+      background: #334155;
+      color: white;
+      border: 2px solid transparent;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .diff-btn.active {
+      border-color: var(--accent);
+      background: #0284c7;
+    }
+
     canvas {
       background-color: #020617;
       border: 2px solid var(--accent);
@@ -247,10 +273,18 @@
       </div>
     </div>
 
-    <!-- Mobile Arcade Game -->
+    <!-- Arcade Game -->
     <div class="card game-container">
       <h2>Jacob's Breadcrumb Blitz</h2>
-      <p class="subtitle">Desktop: Arrow Keys / Space | Mobile: Use Touch Pad</p>
+      <p class="subtitle" style="margin-bottom: 10px;">Select Location Difficulty:</p>
+      
+      <!-- Difficulty Selection Buttons -->
+      <div class="difficulty-select">
+        <button class="diff-btn active" onclick="setDifficulty('easy', this)">🌾 Free Range</button>
+        <button class="diff-btn" onclick="setDifficulty('medium', this)">🏡 Country Town</button>
+        <button class="diff-btn" onclick="setDifficulty('hard', this)">🏙️ Big City</button>
+      </div>
+
       <canvas id="gameCanvas" width="400" height="400"></canvas>
 
       <!-- On-Screen Touch D-Pad -->
@@ -339,23 +373,62 @@
       playPigeonSound('coo');
     }
 
-    // Mobile Arcade Game Logic
+    // Mobile Arcade Game Logic with Difficulty Levels
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
     const pigeonImg = new Image();
     pigeonImg.src = 'https://246939605.fs1.hubspotusercontent-na2.net/hubfs/246939605/Untitled%20design%20(5).png';
 
-    let pigeon = { x: 180, y: 180, size: 40, speed: 5 };
+    let currentDifficulty = 'easy';
+    let pigeon = { x: 180, y: 180, size: 40, speed: 6 };
     let crumbs = [];
+    let hazards = [];
     let score = 0;
     let keys = {};
 
+    const difficultyConfigs = {
+      easy: { speed: 6, hazardSpeed: 0, hazardCount: 0, crumbCount: 6, label: "Free Range" },
+      medium: { speed: 5, hazardSpeed: 2, hazardCount: 2, crumbCount: 4, label: "Country Town" },
+      hard: { speed: 4, hazardSpeed: 4.5, hazardCount: 4, crumbCount: 3, label: "Big City" }
+    };
+
+    function setDifficulty(level, btnElement) {
+      currentDifficulty = level;
+      document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+      resetGame();
+    }
+
+    function resetGame() {
+      const config = difficultyConfigs[currentDifficulty];
+      pigeon.speed = config.speed;
+      pigeon.x = 180;
+      pigeon.y = 180;
+      score = 0;
+      crumbs = [];
+      hazards = [];
+
+      for (let i = 0; i < config.crumbCount; i++) spawnCrumb();
+      for (let i = 0; i < config.hazardCount; i++) spawnHazard();
+    }
+
     function spawnCrumb() {
       crumbs.push({
-        x: Math.random() * (canvas.width - 20) + 10,
-        y: Math.random() * (canvas.height - 20) + 10,
+        x: Math.random() * (canvas.width - 30) + 15,
+        y: Math.random() * (canvas.height - 30) + 15,
         size: 8
+      });
+    }
+
+    function spawnHazard() {
+      hazards.push({
+        x: Math.random() * (canvas.width - 40),
+        y: Math.random() * (canvas.height - 40),
+        width: 35,
+        height: 20,
+        dx: (Math.random() > 0.5 ? 1 : -1) * difficultyConfigs[currentDifficulty].hazardSpeed,
+        dy: (Math.random() > 0.5 ? 1 : -1) * difficultyConfigs[currentDifficulty].hazardSpeed
       });
     }
 
@@ -363,7 +436,7 @@
     window.addEventListener('keydown', (e) => keys[e.key] = true);
     window.addEventListener('keyup', (e) => keys[e.key] = false);
 
-    // Touch Button Listeners
+    // Touch Controls
     function bindTouchControl(id, keyName) {
       const btn = document.getElementById(id);
       const start = (e) => { e.preventDefault(); keys[keyName] = true; };
@@ -379,11 +452,7 @@
     bindTouchControl('btnLeft', 'ArrowLeft');
     bindTouchControl('btnRight', 'ArrowRight');
 
-    // Prevent mobile canvas touch scrolling
     canvas.addEventListener('touchstart', (e) => e.preventDefault());
-
-    // Initial Crumb setup
-    for (let i = 0; i < 5; i++) spawnCrumb();
 
     function update() {
       if (keys['ArrowUp'] || keys['w']) pigeon.y = Math.max(0, pigeon.y - pigeon.speed);
@@ -391,7 +460,7 @@
       if (keys['ArrowLeft'] || keys['a']) pigeon.x = Math.max(0, pigeon.x - pigeon.speed);
       if (keys['ArrowRight'] || keys['d']) pigeon.x = Math.min(canvas.width - pigeon.size, pigeon.x + pigeon.speed);
 
-      // Check collisions
+      // Check Crumb collisions
       crumbs.forEach((crumb, index) => {
         const dist = Math.hypot((pigeon.x + pigeon.size / 2) - crumb.x, (pigeon.y + pigeon.size / 2) - crumb.y);
         if (dist < pigeon.size / 2 + crumb.size) {
@@ -399,6 +468,29 @@
           score += 10;
           playPigeonSound('flap');
           spawnCrumb();
+        }
+      });
+
+      // Update and Check Hazards (Cars / Obstacles)
+      hazards.forEach(h => {
+        h.x += h.dx;
+        h.y += h.dy;
+
+        if (h.x <= 0 || h.x + h.width >= canvas.width) h.dx *= -1;
+        if (h.y <= 0 || h.y + h.height >= canvas.height) h.dy *= -1;
+
+        // Collision with Jacob (Penalty)
+        if (
+          pigeon.x < h.x + h.width &&
+          pigeon.x + pigeon.size > h.x &&
+          pigeon.y < h.y + h.height &&
+          pigeon.y + pigeon.size > h.y
+        ) {
+          score = Math.max(0, score - 5);
+          playPigeonSound('alarm');
+          // Bounce back
+          pigeon.x = Math.max(0, pigeon.x - h.dx * 3);
+          pigeon.y = Math.max(0, pigeon.y - h.dy * 3);
         }
       });
     }
@@ -414,7 +506,13 @@
         ctx.fill();
       });
 
-      // Draw Pigeon Sprite
+      // Draw Hazards (Cars / Traffic in Medium & Hard)
+      ctx.fillStyle = '#ef4444';
+      hazards.forEach(h => {
+        ctx.fillRect(h.x, h.y, h.width, h.height);
+      });
+
+      // Draw Pigeon
       if (pigeonImg.complete && pigeonImg.naturalWidth !== 0) {
         ctx.drawImage(pigeonImg, pigeon.x, pigeon.y, pigeon.size, pigeon.size);
       } else {
@@ -422,10 +520,11 @@
         ctx.fillRect(pigeon.x, pigeon.y, pigeon.size, pigeon.size);
       }
 
-      // Draw Score
+      // Draw HUD
       ctx.fillStyle = '#ffffff';
       ctx.font = '16px system-ui';
       ctx.fillText(`Crumbs Eaten: ${score}`, 10, 25);
+      ctx.fillText(`Mode: ${difficultyConfigs[currentDifficulty].label}`, 10, 45);
     }
 
     function gameLoop() {
@@ -434,6 +533,7 @@
       requestAnimationFrame(gameLoop);
     }
 
+    resetGame();
     gameLoop();
   </script>
 </body>
